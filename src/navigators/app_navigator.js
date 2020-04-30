@@ -1,48 +1,59 @@
 "use strict";
 import React from "react";
-import { View, Button, Text } from "react-native";
-import messaging from "@react-native-firebase/messaging";
+
+/* Other lib */
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useNavigation } from "@react-navigation/native";
+import messaging from "@react-native-firebase/messaging";
+/* Other lib */
+
 /* routes */
 import Routes from "./../routes";
+/* routes */
 
 /* store */
 import { connect } from "react-redux";
 const mapStateToProps = state => ({ language : state.language });
+/* store */
+
+/* Push Notification Background Handler */
 messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
 });
+/* Push Notification Background Handler */
+
+/* Instance Of TopBar Navigator */
+const Tab = createMaterialTopTabNavigator();
+/* Instance Of TopBar Navigator */
 
 ///////////////////////////////////////////////////////////
 
-const Tab = createMaterialTopTabNavigator();
 const TabContainer = () => { 
     
     const [ initial_route, setInitailRoute] = React.useState("TAB 3");
     React.useEffect(() => {
         messaging().getToken().then((res)=>console.log(res)).catch((error)=>console.log(error));
-        messaging().onNotificationOpenedApp(remoteMessage => {
-            console.log(
-              'Notification caused app to open from background state:',
-              remoteMessage,
-            );
-            
-          });
-      
-          // Check whether an initial notification is available
-          messaging().getInitialNotification()
-          .then(remoteMessage => {
-            if (remoteMessage) {
-              console.log(
-                'Notification caused app to open from quit state:',
-                remoteMessage,
-              );
-              
-            }
-              
+		messaging().onNotificationOpenedApp( remoteMessage => {
+			if (remoteMessage) {  
+				console.log(
+					'Notification caused app to open from background state:',
+					remoteMessage,
+				);
+			}    
         });
-    }, []);
+      
+        messaging().getInitialNotification()
+        .then(remoteMessage => {
+            if (remoteMessage) {
+				console.log(
+					'Notification caused app to open from quit state:',
+					remoteMessage,
+				);
+              
+            } 
+        });
+	}, []);
+	
+	
     return (
         <Tab.Navigator
             initialRouteName={initial_route}
