@@ -14,7 +14,11 @@ const checkLoggedIn = () => {
     return true;
 }
 
+
 const AppContainer = (props) => {
+    
+    
+
     const app_loading = props.auth.app_loading;
     const logged_in = checkLoggedIn(props.auth);
     return app_loading ? <AppLoadingStack/> : logged_in ? <LoggedInAppContainer/> : <SignInStack/>
